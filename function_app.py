@@ -1,6 +1,7 @@
 import azure.functions as func
 import os
 import openai
+import json
 from azure.storage.blob import BlobServiceClient
 import logging
 import mimetypes  # get file type
@@ -13,6 +14,24 @@ from computer_vision import extract_text_from_image
 from document_intelligence import extract_text_from_document
 from imorove_openai import improve_text_with_openai
 
+#テストしてみる
+
+import json
+import os
+
+# local.settings.jsonのパスを指定
+local_settings_path = 'local.settings.json'
+
+# JSONファイルを読み込む
+with open(local_settings_path, 'r', encoding='utf-8') as f:
+    local_settings = json.load(f)
+
+# "Values"セクションを環境変数に設定
+environment_variables = local_settings.get("Values", {})
+for key, value in environment_variables.items():
+    os.environ[key] = value
+
+
 # get API_KEY and ENDPOINT
 vision_key = os.getenv("COMPUTER_VISION_API_KEY")
 vision_endpoint = os.getenv("COMPUTER_VISION_ENDPOINT")
@@ -24,6 +43,8 @@ openai.api_key = os.getenv("AZURE_OPENAI_API_KEY")
 openai.azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")  
 openai.api_type = "azure"
 openai.api_version = "2023-05-15"  # version
+#APIを確認
+print(os.getenv("AZURE_OPENAI_ENDPOINT"))
 
 # route setting
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
